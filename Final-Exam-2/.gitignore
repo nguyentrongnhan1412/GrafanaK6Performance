@@ -1,0 +1,25 @@
+# K6 test artifacts
+accounts.json
+*.json.bak
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment files
+.env
+.env.local
+
+# Test results
+results/
+*.json.gz

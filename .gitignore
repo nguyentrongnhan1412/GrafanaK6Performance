@@ -1,0 +1,8 @@
+# Ignore Requirement files
+**/Requirement.txt
+Requirement.txt
+
+# Ignore markdown files
+*.md
+**/*.md
+
