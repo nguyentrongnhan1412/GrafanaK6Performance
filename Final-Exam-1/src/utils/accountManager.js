@@ -12,7 +12,7 @@ export class AccountManager {
     this.sharedAccounts = sharedAccounts;
     this.isSharedArrayMode = sharedAccounts !== null;
     this.autoSave = false;
-    
+
     if (this.isSharedArrayMode) {
       this._loadFromSharedArray();
     } else if (preGeneratedAccounts && preGeneratedAccounts.length > 0) {
@@ -59,46 +59,8 @@ export class AccountManager {
   }
 
   _saveAccounts() {
-    if (this.accounts.length === 0) {
-      this.logger.info('No accounts to save');
-      return true;
-    }
-    
-    const maxRetries = 3;
-    let retryCount = 0;
-    
-    while (retryCount < maxRetries) {
-      try {
-        if (retryCount > 0) {
-          const backoffDelay = Math.random() * 0.1 + retryCount * 0.05;
-          sleep(backoffDelay);
-        }
-        
-        const file = open(this.storageFile, 'w');
-        if (!file) {
-          retryCount++;
-          if (retryCount < maxRetries) {
-            continue;
-          }
-          this.logger.error(`Failed to open file for writing after ${maxRetries} attempts: ${this.storageFile}`);
-          return false;
-        }
-        
-        const jsonData = JSON.stringify(this.accounts.map(user => user.toJSON()), null, 2);
-        file.write(jsonData);
-        file.close();
-        this.logger.info(`Saved ${this.accounts.length} accounts to ${this.storageFile}`);
-        return true;
-      } catch (error) {
-        retryCount++;
-        if (retryCount < maxRetries) {
-          continue;
-        }
-        this.logger.error(`Failed to save accounts to ${this.storageFile} after ${maxRetries} attempts`, error);
-        return false;
-      }
-    }
-    return false;
+    this.logger.info('File persistence is disabled in this environment (k6 execution). Accounts are managed in-memory.');
+    return true;
   }
 
   addAccount(user) {
@@ -167,11 +129,11 @@ export class AccountManager {
     if (this.isSharedArrayMode) {
       const sharedAccounts = this.sharedAccounts ? this.sharedAccounts.map(data => User.fromJSON(data)) : [];
       const fileAccounts = this._loadAccountsFromFile();
-      
+
       const existingEmails = new Set(this.accounts.map(acc => acc.email));
       const allNewAccounts = [...sharedAccounts, ...fileAccounts].filter(acc => !existingEmails.has(acc.email));
       this.accounts = [...this.accounts, ...allNewAccounts];
-      
+
       if (allNewAccounts.length > 0) {
         this.logger.info(`Reloaded ${allNewAccounts.length} new accounts`);
       }

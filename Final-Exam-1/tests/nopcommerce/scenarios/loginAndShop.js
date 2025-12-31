@@ -22,20 +22,20 @@ export class LoginAndShopScenario {
     if (!account) {
       const maxRetries = 3;
       let retryCount = 0;
-      
+
       while (!account && retryCount < maxRetries) {
         const backoffDelay = Math.pow(2, retryCount) * 0.1;
         sleep(backoffDelay);
         this.accountManager.reload();
         account = this.accountManager.getAccountForVU(__VU, nopCommerceConfig.loginAndShop.vus);
-        
+
         if (!account) {
           account = this.accountManager.getRandomAccount();
         }
-        
+
         retryCount++;
       }
-      
+
       if (!account) {
         this.logger.error(`VU ${__VU} - No account available for login after ${maxRetries} retries`);
         return;
@@ -62,6 +62,8 @@ export class LoginAndShopScenario {
 
 const scenario = new LoginAndShopScenario();
 export function loginAndShop() {
-  scenario.execute();
+  // We need to instantiate the scenario here to ensure it uses the updated AccountManager
+  // that was initialized with pre-generated accounts passed from setup()
+  new LoginAndShopScenario().execute();
 }
 
