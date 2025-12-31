@@ -16,11 +16,11 @@ export function registerUser() {
 
 export function loginAndShop(data) {
   if (data && data.accounts) {
-    // Re-initialize account manager for this VU with pre-generated accounts
+    
     initializeAccountManager(null, data.accounts);
   }
 
-  // Create a new scenario instance ensures it uses the updated AccountManager
+  
   loginAndShopScenario();
 }
 
@@ -54,20 +54,20 @@ export const options = {
 export function setup() {
   const data = testRunner.setup();
 
-  // Pre-generate accounts for login scenario
+  
   const userGenerator = new UserDataGenerator(nopCommerceConfig);
-  // We can pass null as httpClient, the service will instantiate a default one
+  
   const registrationService = new NopCommerceRegistrationService(null, userGenerator);
 
   const accounts = [];
-  // Ensure we have enough accounts for all VUs (or more)
+  
   const accountsNeeded = nopCommerceConfig.loginAndShop.vus;
 
   console.log(`Setup: Generating and registering ${accountsNeeded} accounts...`);
 
   for (let i = 0; i < accountsNeeded; i++) {
     const user = userGenerator.generate();
-    // Register the user
+    
     const result = registrationService.registerUser(user);
     if (result.success) {
       accounts.push(user.toJSON());

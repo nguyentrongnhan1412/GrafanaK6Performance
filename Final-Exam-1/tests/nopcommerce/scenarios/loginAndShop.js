@@ -62,8 +62,8 @@ export class LoginAndShopScenario {
 
 const scenario = new LoginAndShopScenario();
 export function loginAndShop() {
-  // We need to instantiate the scenario here to ensure it uses the updated AccountManager
-  // that was initialized with pre-generated accounts passed from setup()
+  
+  
   new LoginAndShopScenario().execute();
 }
 
